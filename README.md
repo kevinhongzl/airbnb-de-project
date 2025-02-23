@@ -55,7 +55,7 @@ docker compose up \
 #### Deployed successfully! 
 If everything works as expected, you will get your Airflow orchestration results like this:
 
-<img src="https://github.com/kevinkevin556/airbnb-de-project/blob/main/images/airflow.png" alt="drawing" width="75%"/>
+<img src="./images/airflow.png" alt="airlfow" width="75%"/>
 
 #### How to tear down resources / shut down the running container?
 * If you are still running the docker container

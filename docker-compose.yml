@@ -1,0 +1,48 @@
+services:
+  postgres:
+    image: postgis/postgis:17-3.5
+    environment:
+      - POSTGRES_USER=airflow
+      - POSTGRES_PASSWORD=airflow
+      - POSTGRES_DB=airflow
+    ports:
+      - "5434:5432"
+
+  webserver:
+    user: root
+    hostname: webserver
+    build:
+      context: ./airflow
+      dockerfile: Dockerfile
+    entrypoint: /opt/airflow/entrypoint.sh
+    command: webserver
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+    - TF_VAR_PROJECT # dbt-cloud-bigquery-450116
+    - TF_VAR_BUCKET_NAME # test-bucket-12352
+    - TF_VAR_DATASET_ID # dataset_from_client_1234
+    env_file:
+      - ./airflow/airflow.env
+    volumes:
+      - ./entrypoint.sh:/opt/airflow/entrypoint.sh
+      # airflow
+      - ./airflow/dags:/opt/airflow/dags
+      # elt
+      - ./data:/opt/airflow/data
+      - ./extract:/opt/airflow/extract
+      - ./load:/opt/airflow/load
+      - ./dbt:/opt/airflow/dbt
+      # cloud-related
+      - ./credentials:/root/.config/gcloud
+      - ./terraform/main.tf:/opt/airflow/terraform/main.tf
+      - ./terraform/variables.tf:/opt/airflow/terraform/variables.tf
+      - ./terraform:/opt/airflow/terraform
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD-SHELL", "[ -f /usr/local/airflow/airflow-webserver.pid ]"]
+      interval: 30s
+      timeout: 30s
+      retries: 2

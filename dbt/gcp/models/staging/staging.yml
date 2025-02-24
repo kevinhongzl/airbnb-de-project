@@ -1,0 +1,19 @@
+models:
+    - name: stg_listings
+      tests:
+        - nullity_equality:
+            compare_model: source('dataset', 'raw_listings')
+            keys: ['id']
+            exclude: ['host_verifications'] # since this test does not support empty array to null
+    
+    - name: stg_neighbourhoods
+      tests:
+        - nullity_equality:
+            compare_model: source('dataset', 'raw_neighbourhoods')
+            keys: ['neighbourhood']
+    
+    - name: stg_reviews
+      tests:
+        - nullity_equality:
+            compare_model: source('dataset', 'raw_reviews')
+            keys: ['id']

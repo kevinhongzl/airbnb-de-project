@@ -1,0 +1,38 @@
+models:
+  - name: dim_hosts
+    config:
+      contract: {enforced: true}
+    columns:
+      - name: host_id
+        data_type: bigint
+        description: Airbnb's unique identifier for the host/user
+        tests:
+          - unique
+          - not_null
+        constraints:
+          - type: primary_key
+      - name: url
+        data_type: text
+        description: (host_url) The Airbnb page for the host
+      - name: name
+        data_type: text
+        description: (host_name) Name of the host. Usually just the first name(s).
+      - name: since
+        data_type: date
+        description: (host_since) The date the host/user was created. For hosts that are Airbnb guests this could be the date they registered as a guest.
+      - name: location
+        data_type: text
+        description: (host_location) The host's self reported location
+      - name: about
+        data_type: text
+        description: (host_about) Description about the host
+      - name: thumbnail_url
+        data_type: text
+        description: (host_thumbnail_url)
+      - name: picture_url
+        data_type: text
+        description: (host_picture_url)
+      - name: neighbourhood_name
+        data_type: text
+        description: (host_neighbourhood)
+

@@ -1,0 +1,114 @@
+models:
+  - name: fct_listing_info
+    config:
+        contract: {enforced: true}
+    columns:
+      - name: listing_id
+        data_type: bigint
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_listings')
+            to_columns: [listing_id]
+      - name: scrape_id
+        data_type: bigint
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_scrape')
+            to_columns: [scrape_id]
+      - name: price
+        despription: daily price in local currency.
+        data_type: real
+      - name: minimum_nights
+        description: minimum number of night stay for the listing (calendar rules may be different)
+        data_type: integer
+      - name: maximum_nights
+        description: maximum number of night stay for the listing (calendar rules may be different)
+        data_type: integer
+      - name: minimum_minimum_nights
+        description: the smallest minimum_night value from the calender (looking 365 nights in the future)
+        data_type: integer
+      - name: maximum_minimum_nights
+        description: the largest minimum_night value from the calender (looking 365 nights in the future)
+        data_type: integer
+      - name: minimum_maximum_nights
+        description: the smallest maximum_night value from the calender (looking 365 nights in the future)
+        data_type: integer
+      - name: maximum_maximum_nights
+        description: the largest maximum_night value from the calender (looking 365 nights in the future)
+        data_type: integer
+      - name: minimum_nights_avg_ntm
+        description: the average minimum_night value from the calender (looking 365 nights in the future)
+        data_type: real
+      - name: maximum_nights_avg_ntm
+        description: the average maximum_night value from the calender (looking 365 nights in the future)
+        data_type: real
+      - name: calendar_updated
+        data_type: date
+      - name: has_availability
+        data_type: boolean
+      - name: availability_30
+        description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may not be available because it has been booked by a guest or blocked by the host.
+        data_type: integer
+      - name: availability_60
+        description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may not be available because it has been booked by a guest or blocked by the host.
+        data_type: integer
+      - name: availability_90
+        description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may not be available because it has been booked by a guest or blocked by the host.
+        data_type: integer
+      - name: availability_365
+        description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may not be available because it has been booked by a guest or blocked by the host.
+        data_type: integer
+      - name: calendar_last_scraped
+        data_type: date
+      - name: number_of_reviews
+        description: The number of reviews the listing has
+        data_type: integer
+      - name: number_of_reviews_ltm
+        description: The number of reviews the listing has (in the last 12 months)
+        data_type: integer
+      - name: number_of_reviews_l30d
+        description: The number of reviews the listing has (in the last 30 days)
+        data_type: integer
+      - name: first_review
+        description: The date of the first/oldest review
+        data_type: date
+      - name: last_review
+        description: The date of the last/newest review
+        data_type: date
+      - name: review_scores_rating
+        data_type: real
+      - name: review_scores_accuracy
+        data_type: real
+      - name: review_scores_cleanliness
+        data_type: real
+      - name: review_scores_checkin
+        data_type: real
+      - name: review_scores_communication
+        data_type: real
+      - name: review_scores_location
+        data_type: real
+      - name: review_scores_value
+        data_type: real
+      - name: license
+        description: The licence/permit/registration number
+        data_type: text
+      - name: instant_bookable
+        description: Whether the guest can automatically book the listing without the host requiring to accept their booking request. An indicator of a commercial listing.
+        data_type: boolean
+      - name: reviews_per_month
+        description: |
+          The average number of reviews per month the listing has over the lifetime of the listing.
+
+          Psuedocoe/~SQL:
+          ```
+          IF scrape_date - first_review <= 30 THEN number_of_reviews
+          ELSE number_of_reviews / ((scrape_date - first_review + 1) / (365/12))
+          ```
+        data_type: real
+

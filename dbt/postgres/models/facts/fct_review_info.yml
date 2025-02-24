@@ -1,0 +1,49 @@
+models:
+  - name: fct_review_info
+    description: The reviews for each listing.
+    config:
+      contract: {enforced: true}
+    columns:
+      - name: review_id
+        data_type: bigint
+        tests:
+          - not_null
+          - unique
+        constraints:
+          - type: primary_key
+      
+      - name: listing_id
+        data_type: bigint
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_listings')
+            to_columns: [listing_id]
+      
+      - name: reviewer_id
+        data_type: bigint
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_reviewers')
+            to_columns: [reviewer_id]
+
+      - name: scrape_id
+        data_type: bigint
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_scrape')
+            to_columns: [scrape_id]
+
+      - name: date
+        data_type: date
+      
+      - name: comments
+        data_type: text

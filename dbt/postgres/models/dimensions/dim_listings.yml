@@ -1,0 +1,99 @@
+models:
+    - name: dim_listings
+      config:
+        contract: {enforced: true}
+      columns:
+        - name: listing_id
+          description: Airbnb's unique identifier for the listing
+          data_type: bigint
+          tests:
+            - unique
+            - not_null
+          constraints:
+            - type: primary_key
+        - name: host_id
+          description: Airbnb's unique identifier for the host/user
+          data_type: bigint
+          tests:
+            - not_null
+          constraints:
+            - type: not_null
+            - type: foreign_key
+              to: ref('dim_hosts')
+              to_columns: [host_id]
+        - name: listing_url
+          data_type: text
+        - name: name
+          description: Name of the listing
+          data_type: text
+        - name: description
+          description: Detailed description of the listing
+          data_type: text
+        - name: neighborhood_overview
+          description: Host's description of the neighbourhood
+          data_type: text
+        - name: picture_url
+          description: URL to the Airbnb hosted regular sized image for the listing
+          data_type: text
+        - name: latitude
+          description: Uses the World Geodetic System (WGS84) projection for latitude and longitude.
+          data_type: real
+        - name: longitude
+          description: Uses the World Geodetic System (WGS84) projection for latitude and longitude.
+          data_type: real
+        - name: property_type
+          description: Self selected property type. Hotels and Bed and Breakfasts are described as such by their hosts in this field
+          data_type: text
+        - name: room_type
+          description: |
+            [Entire home/apt|Private room|Shared room|Hotel]
+
+            All homes are grouped into the following three room types:
+              * Entire place
+              * Private room
+              * Shared room
+            
+            #### Entire place
+            Entire places are best if you're seeking a home away from home. With an entire place, you'll have the whole space to yourself. This usually includes a bedroom, a bathroom, a kitchen, and a separate, dedicated entrance. Hosts should note in the description if they'll be on the property or not (ex: ""Host occupies first floor of the home""), and provide further details on the listing.
+            
+            #### Private rooms
+            Private rooms are great for when you prefer a little privacy, and still value a local connection. When you book a private room, you'll have your own private room for sleeping and may share some spaces with others. You might need to walk through indoor spaces that another host or guest may occupy to get to your room.
+            
+            #### Shared rooms
+            Shared rooms are for when you don't mind sharing a space with others. When you book a shared room, you'll be sleeping in a space that is shared with others and share the entire space with other people. Shared rooms are popular among flexible travelers looking for new friends and budget-friendly stays."
+          data_type: text
+          tests:
+          - accepted_values:
+              values: ['Entire home/apt', 'Private room', 'Shared room', 'Hotel room']
+        - name: accommodates
+          description: The maximum capacity of the listing
+          data_type: int
+        - name: bathrooms
+          description: The number of bedrooms
+          data_type: int
+        - name: bathrooms_text
+          description: The number of bathrooms in the listing. On the Airbnb web-site, the bathrooms field has evolved from a number to a textual description. For older scrapes, bathrooms is used.
+          data_type: text
+        - name: bedrooms
+          description: The number of bedrooms
+          data_type: int
+        - name: beds
+          description: The number of bed(s)
+          data_type: int
+        - name: amenities
+          data_type: text
+        - name: neighbourhood_id
+          data_type: int
+          tests:
+            - not_null
+          constraints:
+            - type: not_null
+            - type: foreign_key
+              to: ref('dim_neighbourhoods')
+              to_columns: [neighbourhood_id]
+        - name: neighbourhood_name
+          data_type: text
+        - name: neighbourhood_detail
+          data_type: text
+
+

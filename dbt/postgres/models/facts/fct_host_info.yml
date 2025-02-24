@@ -1,0 +1,66 @@
+models:
+  - name: fct_host_info
+    config:
+        contract: {enforced: true}
+    columns:
+      - name: host_id
+        data_type: bigint
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_hosts')
+            to_columns: [host_id]
+      - name: scrape_id
+        data_type: bigint
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_scrape')
+            to_columns: [scrape_id]
+      - name: response_time
+        description: (host_response_time)
+        data_type: text
+        tests:
+          - accepted_values:
+              values: ['within an hour', 'within a few hours', 'within a day', 'a few days or more']
+      - name: response_rate
+        description: (host_response_rate)
+        data_type: real
+      - name: acceptance_rate
+        description: (host_acceptance_rate) That rate at which a host accepts booking requests.
+        data_type: real
+      - name: is_superhost
+        description: (host_is_superhost)
+        data_type: bool
+      - name: listings_count
+        description: (host_listings_count) The number of listings the host has (per Airbnb unknown calculations)
+        data_type: int
+      - name: total_listings_count
+        description: The number of listings the host has (per Airbnb unknown calculations)
+        data_type: int
+      - name: verifications
+        description: (host_verifications)
+        data_type: text []
+      - name: has_profile_pic
+        description: (host_has_profile_pic) host
+        data_type: bool
+      - name: identity_verified
+        description: (host_identity_verified)
+        data_type: bool
+      - name: calculated_listings
+        description: (calculated_host_listings_count) The number of listings the host has in the current scrape, in the city/region geography.
+        data_type: int
+      - name: calculated_entire_homes
+        description: (calculated_host_listings_count_entire_homes) The number of Entire home/apt listings the host has in the current scrape, in the city/region geography
+        data_type: int
+      - name: calculated_private_rooms
+        description: (calculated_host_listings_count_private_rooms) The number of Shared room listings the host has in the current scrape, in the city/region geography
+        data_type: int
+      - name: calculated_shared_rooms
+        description: (calculated_host_listings_count_private_rooms) The number of Shared room listings the host has in the current scrape, in the city/region geography
+        data_type: int
+

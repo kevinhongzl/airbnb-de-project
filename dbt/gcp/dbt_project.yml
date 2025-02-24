@@ -1,0 +1,38 @@
+name: "dbt_gcp"
+version: "1.0.0"
+
+profile: "dbt_gcp"
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+flags:
+  send_anonymous_usage_stats: false
+  # warn_error_options:
+  #   error: # Previously called "include"
+  #   warn: # Previously called "exclude"
+  #   silence: # To silence or ignore warnings
+  #     - ConstraintNotEnforced
+
+models:
+  dbt_gcp:
+    staging:
+      +materialized: view
+    dimensions:
+      +materialized: incremental
+      +incremental_strategy: merge
+      +on_schema_change: fail
+    facts:
+      +materialized: incremental
+      +incremental_strategy: merge
+      +on_schema_change: fail
+    marts:
+      +materialized: view

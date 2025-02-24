@@ -1,0 +1,14 @@
+models:
+  - name: dim_reviewers
+    config:
+      contract: {enforced: true}
+    columns:
+      - name: reviewer_id
+        data_type: bigint
+        tests:
+          - unique
+          - not_null
+        constraints:
+          - type: primary_key
+      - name: name
+        data_type: text

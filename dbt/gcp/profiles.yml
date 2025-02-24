@@ -1,0 +1,14 @@
+dbt_gcp:
+  outputs:
+    dev:
+      type: bigquery
+      project: "{{ env_var('TF_VAR_PROJECT') }}"
+      dataset: "{{ env_var('TF_VAR_DATASET_ID') }}" 
+      location: US
+      method: service-account
+      keyfile: /root/.config/gcloud/application_default_credentials.json
+      priority: interactive
+      job_execution_timeout_seconds: 300
+      job_retries: 1
+      threads: 4
+  target: dev

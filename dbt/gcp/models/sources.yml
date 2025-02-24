@@ -1,0 +1,8 @@
+sources:
+  - name: dataset
+    database: "{{ env_var('TF_VAR_PROJECT') }}" # dbt-cloud-bigquery-450116
+    schema: "{{ env_var('TF_VAR_DATASET_ID') }}" # dataset_from_client_1234
+    tables:
+      - name: raw_listings
+      - name: raw_reviews
+      - name: raw_neighbourhoods

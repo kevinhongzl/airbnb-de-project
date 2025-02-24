@@ -1,0 +1,12 @@
+dbt_pg:
+  outputs:
+    dev:
+      dbname: airbnb
+      host: postgres
+      pass: airflow
+      port: 5432
+      schema: public
+      threads: 1
+      type: postgres
+      user: airflow
+  target: dev

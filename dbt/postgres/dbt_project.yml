@@ -1,0 +1,31 @@
+name: "dbt_pg"
+version: "1.0.0"
+
+profile: "dbt_pg"
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+flags:
+  send_anonymous_usage_stats: false
+
+models:
+  dbt_pg:
+    dimensions:
+      +materialized: incremental
+      +incremental_strategy: merge
+      +on_schema_change: fail
+    facts:
+      +materialized: incremental
+      +incremental_strategy: merge
+      +on_schema_change: fail
+    marts:
+      +materialized: view

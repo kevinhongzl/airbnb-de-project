@@ -1,0 +1,20 @@
+models:
+  - name: dim_neighbourhoods
+    config:
+      contract: { enforced: true }
+    columns:
+      - name: neighbourhood_id
+        data_type: int
+        tests:
+          - unique
+          - not_null
+        constraints:
+          - type: primary_key
+      - name: name
+        data_type: string
+      - name: english_name
+        data_type: string
+      - name: neighbourhood_group
+        data_type: string
+      - name: geometry
+        data_type: geography

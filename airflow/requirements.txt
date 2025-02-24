@@ -1,0 +1,17 @@
+pandas
+numpy
+geopandas
+geoalchemy2
+sqlalchemy
+psycopg2-binary
+
+# dbt
+dbt-core==1.9.2
+dbt-postgres==1.9.0
+astronomer-cosmos==1.8.2
+opentelemetry-proto==1.30.0
+
+# gcp
+google-cloud-storage
+google-cloud-bigquery
+dbt-bigquery==1.9.1

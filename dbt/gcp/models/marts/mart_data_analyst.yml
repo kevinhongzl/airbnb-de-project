@@ -1,0 +1,53 @@
+models:
+  - name: mart_data_analyst
+    description: Summary information and metrics for listings in Taipei (good for visualisations). Created based on listings.csv summary.
+    columns:
+      - name: id
+        description: Airbnb's unique identifier for the listing
+        data_type: int64
+        tests:
+          - not_null
+          - unique
+      - name: name
+        data_type: string
+      - name: host_id
+        data_type: int64
+      - name: host_name
+        data_type: string
+      - name: neighbourhood_group
+        description: The neighbourhood group as geocoded using the latitude and longitude against neighborhoods as defined by open or public digital shapefiles.
+        data_type: string
+      - name: neighbourhood
+        description: The neighbourhood as geocoded using the latitude and longitude against neighborhoods as defined by open or public digital shapefiles.
+        data_type: string
+      - name: latitude
+        description: Uses the World Geodetic System (WGS84) projection for latitude and longitude.
+        data_type: float64
+      - name: longitude
+        description: Uses the World Geodetic System (WGS84) projection for latitude and longitude
+        data_type: float64
+      - name: room_type
+        data_type: string
+      - name: price
+        description: daily price in local currency. Note, $ sign may be used despite locale
+        data_type: float64
+      - name: minimum_nights
+        description: minimum number of night stay for the listing (calendar rules may be different)
+        data_type: int64
+      - name: number_of_reviews
+        description: The number of reviews the listing has
+        data_type: int64
+      - name: last_review
+        description: The date of the last/newest review
+        data_type: data
+      - name: calculated_host_listings_count
+        description: The number of listings the host has in the current scrape, in the city/region geography.
+        data_type: int64
+      - name: availability_365
+        description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may be available because it has been booked by a guest or blocked by the host.
+        data_type: int64
+      - name: number_of_reviews_ltm
+        descriptinon: The number of reviews the listing has (in the last 12 months)
+        data_type: int64
+      - name: license
+        data_type: string

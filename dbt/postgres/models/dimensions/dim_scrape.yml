@@ -1,0 +1,22 @@
+models:
+  - name: dim_scrape
+    config:
+        contract: {enforced: true}
+    columns:
+      - name: scrape_id
+        description: Inside Airbnb "Scrape" this was part of
+        data_type: bigint
+        tests:
+          - unique
+          - not_null
+        constraints:
+          - type: primary_key
+      - name: last_scraped
+        description: UTC. The date and time this listing was "scraped".
+        data_type: date
+      - name: source
+        description: One of "neighbourhood search" or "previous scrape". "neighbourhood search" means that the listing was found by searching the city, while "previous scrape" means that the listing was seen in another scrape performed in the last 65 days, and the listing was confirmed to be still available on the Airbnb site.
+        data_type: text
+        tests:
+          - accepted_values:
+              values: ['city scrape', 'previous scrape']

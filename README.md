@@ -1,7 +1,10 @@
 # Airbnb Data Engineering Project
 
 
-## 💡 Introduction (Problem statement)
+## 💡 Introduction
+Suppose you are a data engineer at Airbnb. How would you design a data pipeline that meets the needs of data analysts, data scientists, and even LLM engineers at your company?
+
+We'll take on this challenge by using monthly data from [Inside Airbnb](https://insideairbnb.com/), an initiative that gathers Airbnb listings, reviews, calendar data, and neighborhood information from many countries. Our goal is to build a data pipeline from scratch. Given the large volume of data, we use the records from Taipei, Taiwan, covering the period between August 2022 and December 2024. We begin by extracting and loading this data into a data lake and a data warehouse, and we complete this ELT pipeline by constructing a data mart, enabling data analysts to query the necessary columns for exploration and insight generation.
 
 ### 🌟 Key Features
 * **On Premise** and **Cloud** ELT solutions

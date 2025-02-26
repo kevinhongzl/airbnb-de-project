@@ -19,29 +19,26 @@ from extract.download_files import download_files_if_not_exist
 
 # parameters
 root = "/opt/airflow"
+terraform = f"{root}/terraform"
 data_source = f"{root}/data"
 extract = f"{root}/extract"
 load = f"{root}/load"
-terraform = f"{root}/terraform"
-
-transform = Path("/opt/airflow/dbt/gcp")  # the dir you mount your dbt project
+transform = f"{root}/dbt/gcp"  # the dir you mount your dbt project
 dbt_executable = Path("/home/airflow/.local/bin/dbt")  # the dir of dbt binaries in the container
-venv_execution_config = ExecutionConfig(
-    dbt_executable_path=str(dbt_executable),
-)
+venv_execution_config = ExecutionConfig(dbt_executable_path=str(dbt_executable))
 db_connection = ProfileConfig(
     profile_name="dbt_gcp",  # the configuration of your dbt profile
     target_name="dev",
     profiles_yml_filepath=f"{transform}/profiles.yml",
 )
-
+test_periods = 6
 
 with DAG(
     "gcp-elt",
     description="An ELT data piepline using Google Cloud Platform (GCP)",
     catchup=True,
     start_date=datetime(2022, 8, 1),
-    schedule=get_schedule(),
+    schedule=get_schedule(-test_periods),
     end_date=datetime(2024, 12, 31),
     max_active_runs=1,
     max_active_tasks=10,
@@ -204,14 +201,6 @@ with DAG(
             create_and_load_raw_reviews(),
             create_and_load_raw_neighbourhoods(),
         ]
-
-    # dbt_seeds = DbtSeedOperator(
-    #     task_id="dbt_seeds",
-    #     project_dir=transform,
-    #     profile_config=db_connection,
-    #     outlets=[Dataset("SEED://AIRBNB")],
-    #     install_deps=True,
-    # )
 
     data_warehouse = DbtTaskGroup(
         group_id="transform_into_staging_dimension_fact_tables",

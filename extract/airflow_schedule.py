@@ -73,14 +73,25 @@ dates = [
 ]
 
 
-def get_schedule():
+def get_schedule(start=0):
     event_dates = []
     for ds in dates:
         y, m, d = map(int, tuple(ds.split("-")))
         event_dates.append(pendulum.datetime(y, m, d))
 
-    return EventsTimetable(
+    event_dates = event_dates[start:]
+    schedule = EventsTimetable(
         event_dates=event_dates,
-        description="Valid datetime",
+        description="Airbnb schedule",
         restrict_to_events=True,
     )
+    if len(event_dates) < 10:
+        desc = "["
+        for d in event_dates[:-1]:
+            desc += f"{str(d.date())}, "
+        desc += f"{str(event_dates[-1].date())}]"
+        schedule.description = desc
+    else:
+        d = [str(d.date()) for d in event_dates]
+        schedule.description = f"[{d[0]}, {d[1]}, {d[2]}, ..., {d[-3]}, {d[-2]}, {d[-1]}]"
+    return schedule

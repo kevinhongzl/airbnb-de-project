@@ -6,7 +6,7 @@ Suppose you are a data engineer at Airbnb. How would you design a data pipeline 
 
 We'll take on this challenge by using monthly data from [Inside Airbnb](https://insideairbnb.com/), an initiative that gathers Airbnb listings, reviews, calendar data, and neighborhood information from many countries. Our goal is to build a data pipeline from scratch. Given the large volume of data, we use the records from Taipei, Taiwan, covering the period between August 2022 and December 2024. We begin by extracting and loading this data into a data lake and a data warehouse, and we complete this ELT pipeline by constructing a data mart, enabling data analysts to query the necessary columns for exploration and insight generation.
 
-**Read the [project docs](https://kevinkevin556.github.io/airbnb-de-project/) generated with [dbt](https://www.getdbt.com/) to know more about this data.**
+**📝Read the [project docs](https://kevinkevin556.github.io/airbnb-de-project/) generated with [dbt](https://www.getdbt.com/) to know more about this data.**
 
 ### 🌟 Key Features
 * **On Premise** and **Cloud** ELT solutions
@@ -29,7 +29,8 @@ We'll take on this challenge by using monthly data from [Inside Airbnb](https://
 
 ### DashBoard
 
-![](./images/dashboard.png)
+<img src="./images/dashboard.png" alt="airflow" width="75%"/>
+
 
 
 ## 🚀 Get Started
@@ -46,17 +47,18 @@ Since everything is containerized in the project, the only prerequisite is to in
 
 ### Cloud ELT using Google Cloud Platform (GCP)
 1. Git clone this repo.
-2. Create a project `<your-project>` and a service-account and download the key file into the directory `credential/` and rename it to `application_default_credentials.json`
+2. Create a project `<your-project>` and a service account. Grant your service account the following two roles: `BigQuery Admin` and `Storage Admin`.
+3. Download the service account key file into the directory `credentials/` and rename it to `application_default_credentials.json`
     * See [here]() for more details about setting up GCP project and credentials.
-3. Run docker compose:
+4. In your shell, set the following environment variables and run docker compose:
 ```shell
 $> export TF_VAR_PROJECT=<your-project>
 $> export TF_VAR_BUCKET_NAME=<your-bucket-name>
 $> export TF_VAR_DATASET_ID=<your-dataset-id>
 $> docker compose up 
 ```
-4. Access `localhost:8080` with your browser and login Airflow with `admin:admin`
-5. Click the toggle of `gcp-elt` to activate the dag
+5. Access `localhost:8080` with your browser and login Airflow with `admin:admin`
+6. Click the toggle of `gcp-elt` to activate the dag
 
 > [!NOTE]
 > The bucket `<your-bucket-name>` and the dataset `<your-dataset-id>` will be created as the pipeline runs. You don't need to create them manually.

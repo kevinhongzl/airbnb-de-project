@@ -1,5 +1,6 @@
 # Airbnb Data Engineering Project
 
+> An ELT pipeline with Docker, GCP, Airflow, Terraform, GCP and dbt using Airbnb data
 
 ## 💡 Introduction
 Suppose you are a data engineer at Airbnb. How would you design a data pipeline that meets the needs of data analysts, data scientists, and even LLM engineers at your company?
@@ -27,7 +28,7 @@ We'll take on this challenge by using monthly data from [Inside Airbnb](https://
 
 ![](./images/architecture.png)
 
-### DashBoard
+### Dashboard
 
 <img src="./images/dashboard.png" alt="airflow" width="75%"/>
 

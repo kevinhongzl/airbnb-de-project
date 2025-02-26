@@ -31,7 +31,7 @@ We'll take on this challenge by using monthly data from [Inside Airbnb](https://
 
 <img src="./images/dashboard.png" alt="airflow" width="75%"/>
 
-
+Final result from Google Look Studio. [Link](https://lookerstudio.google.com/u/0/reporting/606c5c3d-9afd-4e9f-8e9d-43902ae46d23/page/p_hsqb6vwzpd) here. 
 
 ## 🚀 Get Started
 

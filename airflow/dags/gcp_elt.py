@@ -3,12 +3,10 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-from airflow.datasets import Dataset
 from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
 from airflow.utils.task_group import TaskGroup
 from cosmos import DbtTaskGroup, ExecutionConfig, ProfileConfig, ProjectConfig
-from cosmos.operators import DbtSeedOperator
 
 from airflow import DAG
 
@@ -16,6 +14,7 @@ from airflow import DAG
 sys.path.append("/opt/airflow/")
 from extract.airflow_schedule import get_schedule
 from extract.download_files import download_files_if_not_exist
+from load.bigquery_utils import create_and_load, upload_blob
 
 # parameters
 root = "/opt/airflow"
@@ -45,6 +44,7 @@ with DAG(
     tags=["ELT", "cloud"],
 ) as dag:
 
+    # [START operators and tasks]
     @task(task_id="download_files")
     def download_files_to_local(ds=None, **kwargs):
         download_files_if_not_exist(data_source, ds)
@@ -64,8 +64,6 @@ with DAG(
             return f"terraform -chdir={terraform} apply -auto-approve"
 
         terraform_init() >> terraform_validate() >> terraform_apply()
-
-    infras = download_files_to_local() >> initialize_infras
 
     with TaskGroup(group_id="load_files_to_data_lake") as load_files_to_data_lake:
 
@@ -97,110 +95,78 @@ with DAG(
 
         @task(task_id="upload_files_to_gcs")
         def upload_files_to_gcs(ds=None, **kwargs):
-            from google.cloud import storage
-
-            storage_client = storage.Client()
             bucket_name = os.environ["TF_VAR_BUCKET_NAME"]
-            bucket = storage_client.bucket(bucket_name)
             filenames = [
                 "listings.parquet",
                 "reviews.parquet",
                 "neighbourhoods.json",
             ]
-
             for file in filenames:
-                source_file_name = f"{data_source}/{ds}/{file}"
-                destination_blob_name = f"{ds}/{file}"
-                blob = bucket.blob(destination_blob_name)
-                blob.upload_from_filename(source_file_name, if_generation_match=None)
-                # Set if_generation_match=None to enable replacing existing blob
-                # See: https://stackoverflow.com/questions/75547631/
-                # overwrite-single-file-in-a-google-cloud-storage-bucket-via-python-code
-                print(f"File {source_file_name} uploaded to {destination_blob_name}.")
+                upload_blob(bucket_name, data_source, ds, file)
 
         c1 = convert_listings_csv_into_parquet()
         c2 = convert_reviews_csv_into_parquet()
         c3 = convert_neighbourhoods_geojson_into_json()
         [c1, c2, c3] >> upload_files_to_gcs()
 
-    data_lake = infras >> load_files_to_data_lake
-
-    with TaskGroup(
-        group_id="create_raw_tables_in_data_warehouse"
-    ) as create_raw_tables_in_data_warehouse:
+    with TaskGroup(group_id="create_raw_tables_in_data_warehouse") as create_raw_tables:
 
         @task
         def create_and_load_raw_listings(ds, **kwargs):
             from google.cloud import bigquery
 
-            bq_client = bigquery.Client()
             project = os.environ["TF_VAR_PROJECT"]
             dataset_id = os.environ["TF_VAR_DATASET_ID"]
             table_name = "raw_listings"
             bucket = os.environ["TF_VAR_BUCKET_NAME"]
-            table_id = f"{project}.{dataset_id}.{table_name}"
-            uri = f"gs://{bucket}/{ds}/listings.parquet"
-
             job_config = bigquery.LoadJobConfig(
                 source_format=bigquery.SourceFormat.PARQUET,
                 write_disposition="WRITE_TRUNCATE",
                 clustering_fields=["neighbourhood_cleansed", "host_id"],
             )
-            load_job = bq_client.load_table_from_uri(uri, table_id, job_config=job_config)
-            load_job.result()
-            dest_table = bq_client.get_table(table_id)
-            print("Loaded {} rows.".format(dest_table.num_rows))
+            create_and_load(
+                project, dataset_id, table_name, bucket, ds, "listings.parquet", job_config
+            )
 
         @task
         def create_and_load_raw_reviews(ds, **kwargs):
             from google.cloud import bigquery
 
-            bq_client = bigquery.Client()
             project = os.environ["TF_VAR_PROJECT"]
             dataset_id = os.environ["TF_VAR_DATASET_ID"]
             table_name = "raw_reviews"
             bucket = os.environ["TF_VAR_BUCKET_NAME"]
-            table_id = f"{project}.{dataset_id}.{table_name}"
-            uri = f"gs://{bucket}/{ds}/reviews.parquet"
-
             job_config = bigquery.LoadJobConfig(
                 source_format=bigquery.SourceFormat.PARQUET,
                 write_disposition="WRITE_TRUNCATE",
                 clustering_fields=["reviewer_id", "listing_id"],
             )
-            load_job = bq_client.load_table_from_uri(uri, table_id, job_config=job_config)
-            load_job.result()
-            dest_table = bq_client.get_table(table_id)
-            print("Loaded {} rows.".format(dest_table.num_rows))
+            create_and_load(
+                project, dataset_id, table_name, bucket, ds, "reviews.parquet", job_config
+            )
 
         @task
         def create_and_load_raw_neighbourhoods(ds, **kwargs):
             from google.cloud import bigquery
 
-            bq_client = bigquery.Client()
             project = os.environ["TF_VAR_PROJECT"]
             dataset_id = os.environ["TF_VAR_DATASET_ID"]
             table_name = "raw_neighbourhoods"
             bucket = os.environ["TF_VAR_BUCKET_NAME"]
-            table_id = f"{project}.{dataset_id}.{table_name}"
-            uri = f"gs://{bucket}/{ds}/neighbourhoods.json"
-
             job_config = bigquery.LoadJobConfig(
                 source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
                 json_extension="GEOJSON",
                 autodetect=True,
                 write_disposition="WRITE_TRUNCATE",
             )
-            load_job = bq_client.load_table_from_uri(uri, table_id, job_config=job_config)
-            load_job.result()
-            dest_table = bq_client.get_table(table_id)
-            print("Loaded {} rows.".format(dest_table.num_rows))
+            create_and_load(
+                project, dataset_id, table_name, bucket, ds, "neighbourhoods.json", job_config
+            )
 
-        raw_tables = data_lake >> [
-            create_and_load_raw_listings(),
-            create_and_load_raw_reviews(),
-            create_and_load_raw_neighbourhoods(),
-        ]
+        cl1 = create_and_load_raw_listings()
+        cl2 = create_and_load_raw_reviews()
+        cl3 = create_and_load_raw_neighbourhoods()
+        [cl1, cl2, cl3]
 
     data_warehouse = DbtTaskGroup(
         group_id="transform_into_staging_dimension_fact_tables",
@@ -210,5 +176,15 @@ with DAG(
     )
 
     update_dashboard = EmptyOperator(task_id="update_dashboard")
+    # [END operators and tasks]
 
-    raw_tables >> data_warehouse >> update_dashboard
+    # [START pipeline]
+    (
+        download_files_to_local()
+        >> initialize_infras
+        >> load_files_to_data_lake
+        >> create_raw_tables
+        >> data_warehouse
+        >> update_dashboard
+    )
+    # [END pipeline]

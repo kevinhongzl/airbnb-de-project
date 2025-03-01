@@ -4,6 +4,199 @@ sources:
     schema: "{{ env_var('TF_VAR_DATASET_ID') }}" # dataset_from_client_1234
     tables:
       - name: raw_listings
+        columns:
+        - name: id
+          description: Airbnb's unique identifier for the listing
+        - name: listing_url
+
+        - name: scrape_id
+          description: Inside Airbnb "Scrape" this was part of
+        - name: last_scraped
+          description: UTC. The date and time this listing was "scraped".
+        - name: source
+          description: "One of 'neighbourhood search' or 'previous scrape'. 'neighbourhood search' means that the listing was found by searching the city, while 'previous scrape' means that the listing was seen in another scrape performed in the last 65 days, and the listing was confirmed to be still available on the Airbnb site."
+        - name: name
+          description: Name of the listing
+        - name: description
+          description: Detailed description of the listing
+        - name: neighborhood_overview
+          description: Host's description of the neighbourhood
+        - name: picture_url
+          description: URL to the Airbnb hosted regular sized image for the listing
+        - name: host_id
+          description: Airbnb's unique identifier for the host/user
+        - name: host_url
+          description: The Airbnb page for the host
+        - name: host_name
+          description: Name of the host. Usually just the first name(s).
+        - name: host_since
+          description: The date the host/user was created. For hosts that are Airbnb guests, this could be the date they registered as a guest.
+        - name: host_location
+          description: The host's self-reported location
+        - name: host_about
+          description: Description about the host
+        - name: host_response_time
+          description: Response time of the host
+        - name: host_response_rate
+          description: Response rate of the host
+        - name: host_acceptance_rate
+          description: The rate at which a host accepts booking requests.
+        - name: host_is_superhost
+          description: Whether the host is a superhost [t=true; f=false]
+        - name: host_thumbnail_url
+          description: Thumbnail image URL of the host
+        - name: host_picture_url
+          description: Picture URL of the host
+        - name: host_neighbourhood
+          description: The neighborhood where the host is located
+        - name: host_listings_count
+          description: The number of listings the host has (per Airbnb unknown calculations)
+        - name: host_total_listings_count
+          description: The total number of listings the host has (per Airbnb unknown calculations)
+        - name: host_verifications
+          description: Verification details of the host
+        - name: host_has_profile_pic
+          description: Whether the host has a profile picture [t=true; f=false]
+        - name: host_identity_verified
+          description: Whether the host identity is verified [t=true; f=false]
+        - name: neighbourhood
+          description: The general neighborhood of the listing
+        - name: neighbourhood_cleansed
+          description: The neighborhood as geocoded using latitude and longitude against open or public digital shapefiles
+        - name: neighbourhood_group_cleansed
+          description: The neighborhood group as geocoded using latitude and longitude against open or public digital shapefiles
+        - name: latitude
+          description: Uses the World Geodetic System (WGS84) projection for latitude
+        - name: longitude
+          description: Uses the World Geodetic System (WGS84) projection for longitude
+        - name: property_type
+          description: Self-selected property type. Hotels and Bed and Breakfasts are described as such by their hosts in this field
+        - name: room_type
+          description: |
+            [Entire home/apt|Private room|Shared room|Hotel]
+
+            All homes are grouped into the following three room types:
+              * Entire place
+              * Private room
+              * Shared room
+
+            #### Entire place
+            Entire places are best if you're seeking a home away from home. With an entire place, you'll have the whole space to yourself. This usually includes a bedroom, a bathroom, a kitchen, and a separate, dedicated entrance. Hosts should note in the description if they'll be on the property or not (ex: ''Host occupies first floor of the home''), and provide further details on the listing.
+
+            #### Private rooms
+            Private rooms are great for when you prefer a little privacy, and still value a local connection. When you book a private room, you'll have your own private room for sleeping and may share some spaces with others. You might need to walk through indoor spaces that another host or guest may occupy to get to your room.
+
+            #### Shared rooms
+            Shared rooms are for when you don't mind sharing a space with others. When you book a shared room, you'll be sleeping in a space that is shared with others and share the entire space with other people. Shared rooms are popular among flexible travelers looking for new friends and budget-friendly stays.
+            
+            Reference: https://www.airbnb.com/help/article/5/what-does-the-room-type-of-a-listing-mean
+        - name: accommodates
+          description: The maximum capacity of the listing
+        - name: bathrooms
+          description: The number of bathrooms in the listing
+        - name: bathrooms_text
+          description: "The number of bathrooms in the listing. On the Airbnb website, the bathrooms field has evolved from a number to a textual description."
+        - name: bedrooms
+          description: The number of bedrooms in the listing
+        - name: beds
+          description: The number of beds in the listing
+        - name: amenities
+          description: A list of amenities available in the listing
+        - name: price
+          description: "Daily price in local currency. NOTE: the $ sign is a technical artifact of the export, please ignore it."
+        - name: minimum_nights
+          description: Minimum number of nights required for booking the listing
+        - name: maximum_nights
+          description: Maximum number of nights allowed for booking the listing
+        - name: minimum_minimum_nights
+          description: The smallest minimum_night value from the calendar (looking 365 nights in the future)
+        - name: maximum_minimum_nights
+          description: The largest minimum_night value from the calendar (looking 365 nights in the future)
+        - name: minimum_maximum_nights
+          description: The smallest maximum_night value from the calendar (looking 365 nights in the future)
+        - name: maximum_maximum_nights
+          description: The largest maximum_night value from the calendar (looking 365 nights in the future)
+        - name: minimum_nights_avg_ntm
+          description: The average minimum_night value from the calendar (looking 365 nights in the future)
+        - name: maximum_nights_avg_ntm
+          description: The average maximum_night value from the calendar (looking 365 nights in the future)
+        - name: calendar_updated
+          description: The last date when the calendar was updated
+        - name: has_availability
+          description: Whether the listing has availability [t=true; f=false]
+        - name: availability_30
+          description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may not be available because it has been booked by a guest or blocked by the host.
+        - name: availability_60
+          description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may not be available because it has been booked by a guest or blocked by the host.
+        - name: availability_90
+          description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may not be available because it has been booked by a guest or blocked by the host.
+        - name: availability_365
+          description: avaliability_x. The availability of the listing x days in the future as determined by the calendar. Note a listing may not be available because it has been booked by a guest or blocked by the host.
+        - name: calendar_last_scraped
+
+        - name: number_of_reviews
+          description: The number of reviews the listing has
+        - name: number_of_reviews_ltm
+          description: The number of reviews the listing has (in the last 12 months)
+        - name: number_of_reviews_l30d
+          description: The number of reviews the listing has (in the last 30 days)
+        - name: first_review
+          description: The date of the first/oldest review
+        - name: last_review
+          description: The date of the last/newest review
+        - name: review_scores_rating
+          
+        - name: review_scores_accuracy
+          
+        - name: review_scores_cleanliness
+          
+        - name: review_scores_checkin
+          
+        - name: review_scores_communication
+          
+        - name: review_scores_location
+          
+        - name: review_scores_value
+          
+        - name: license
+          description: The license/permit/registration number
+        - name: instant_bookable
+          description: "[t=true; f=false]. Whether the guest can automatically book the listing without the host requiring to accept their booking request. An indicator of a commercial listing."
+        - name: calculated_host_listings_count
+          description: The number of listings the host has in the current scrape, in the city/region geography
+        - name: calculated_host_listings_count_entire_homes
+          description: The number of Entire home/apt listings the host has in the current scrape
+        - name: calculated_host_listings_count_private_rooms
+          description: The number of Private room listings the host has in the current scrape
+        - name: calculated_host_listings_count_shared_rooms
+          description: The number of Shared room listings the host has in the current scrape
+        - name: reviews_per_month
+          description: |
+            The average number of reviews per month the listing has over the lifetime of the listing.
+
+            Psuedocoe/~SQL:
+            ```
+            IF scrape_date - first_review <= 30 THEN number_of_reviews
+            ELSE number_of_reviews / ((scrape_date - first_review + 1) / (365/12))
+            ```
+
       - name: raw_reviews
+        description: The reviews for each listing.
       - name: raw_neighbourhoods
       - name: raw_calendar
+        description: The calendar file records the price, availability and other details from the listing's calendar for each day of the next 365 days
+        columns:
+        - name: listing_id
+         
+        - name: date
+          description: The date in the listing's calendar
+        - name: available
+          description: Whether the date is available for a booking
+        - name: price
+          description: The price listed for the day
+        - name: adjusted_price
+
+        - name: minimum_nights
+          description: Minimum nights for a booking made on this day
+        - name: maximum_nights
+          description: Maximum nights for a booking made on this day

@@ -5,9 +5,9 @@ models:
       See [From Data to Insights: Segmenting Airbnb’s Supply](https://medium.com/airbnb-engineering/from-data-to-insights-segmenting-airbnbs-supply-c88aa2bb9399)
       for more details.
 
-      Note in this dataset, we are unable to tell the reason why listings are not 
-      available. They can be blocked by hosts or booked by guests. However, we assume 
-      that listings are blocked by their hosts is the only reason of being unavailable.
+      Note in this dataset, we can not tell the reason why listings were not 
+      available. They could be blocked by hosts or booked by guests. However, we assume 
+      that listings were blocked by their hosts was the only reason of being unavailable.
 
     tests:
     - dbt_utils.unique_combination_of_columns:

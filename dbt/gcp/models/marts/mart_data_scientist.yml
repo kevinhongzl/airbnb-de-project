@@ -1,0 +1,87 @@
+models:
+  - name: mart_data_scientist
+    description: |
+      The features are created to capture supply patterns of Airbnb listings.
+      See [From Data to Insights: Segmenting Airbnb’s Supply](https://medium.com/airbnb-engineering/from-data-to-insights-segmenting-airbnbs-supply-c88aa2bb9399)
+      for more details.
+
+      Note in this dataset, we are unable to tell the reason why listings are not 
+      available. They can be blocked by hosts or booked by guests. However, we assume 
+      that listings are blocked by their hosts is the only reason of being unavailable.
+
+    tests:
+    - dbt_utils.unique_combination_of_columns:
+        combination_of_columns:
+          - listing_id
+          - scrape_id
+
+    columns:
+      - name: listing_id
+        description: Airbnb's unique identifier for the listing
+        data_type: int64
+        tests:
+          - not_null
+
+      - name: today_date
+        data_type: date
+
+      - name: num_available_past_365
+        data_type: int64
+        description: Number of avaiable nights in the 365-day look-back period
+        tests:                  
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 365
+
+      - name: num_streak_past_365
+        data_type: int64
+        description: |
+          Number of "streaks" in the 365-day look-back period.
+          A Streak is defined as a consecutive sequence of availability 
+          with a minimum of 2 consecutive nights, followed by a subsequent 
+          period of at least 2 consecutive nights of unavailability.
+        tests:                  
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 91 
+              #  <= 365 / 4
+
+      - name: max_consecutive_months
+        data_type: int64
+        description: |
+          Maximum consecutive months.
+          Length of the longest consecutive sequence of months which have
+          a least one night available in the 365-day look-back period.
+        tests:
+          - accepted_values:
+              values: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+              quote: false
+
+      - name: quarters_w_availability
+        data_type: int64
+        description: |
+          Number of quarters with at least one night of availability
+          in the 365-day look-back period.
+        tests:
+          - accepted_values:
+              values: [0, 1, 2, 3, 4]
+              quote: false
+
+  
+      - name: availablity_rate
+        data_type: float64
+        description: num_streak_past_365 divided by 365
+  
+      - name: streakiness
+        data_type: float64
+        description: num_streak_past_365 divided by num_available_past_365
+  
+      - name: scrape_id
+        data_type: int64
+        description: Inside Airbnb 'Scrape' this was part of
+        tests:
+          - not_null
+
+
+
+

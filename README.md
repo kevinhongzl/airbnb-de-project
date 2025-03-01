@@ -3,18 +3,19 @@
 > An ELT pipeline with Docker, GCP, Airflow, Terraform, GCP and dbt using Airbnb data
 
 ## 💡 Introduction
-Suppose you are a data engineer at Airbnb. How would you design a data pipeline that meets the needs of data analysts, data scientists, and even LLM engineers at your company?
+Suppose you are a data engineer at Airbnb. How would you design a data pipeline that meets the needs of data analysts, data scientists, and even LLM engineers?
 
-We'll take on this challenge by using monthly data from [Inside Airbnb](https://insideairbnb.com/), an initiative that gathers Airbnb listings, reviews, calendar data, and neighborhood information from many countries. Our goal is to build a data pipeline from scratch. Given the large volume of data, we use the records from Taipei, Taiwan, covering the period between August 2022 and December 2024. We begin by extracting and loading this data into a data lake and a data warehouse, and we complete this ELT pipeline by constructing a data mart, enabling data analysts to query the necessary columns for exploration and insight generation.
+We'll take on this challenge by using monthly data from [Inside Airbnb](https://insideairbnb.com/), an initiative that gathers Airbnb listings, reviews, calendar data, and neighborhood information from many countries. Our goal is to build a data pipeline from scratch. Given the large volume of data, we use the records from Taipei, Taiwan, covering the period between August 2022 and December 2024. We begin by extracting and loading this data into a data lake and a data warehouse, and we complete this ELT pipeline by constructing data marts, enabling data analysts and data scientists to query the necessary columns for exploration and insight generation.
 
 **📝Read the [project docs](https://kevinkevin556.github.io/airbnb-de-project/) generated with [dbt](https://www.getdbt.com/) to know more about this data.**
 
 ### 🌟 Key Features
 * **On Premise** and **Cloud** ELT solutions
 * **Custom dbt macros and generic tests** for Bigquery
-* **Dimension modelling** for better understanding the dataset <details><summary>Click to view the entity–relationship diagram (powered by [dbdiagram.io](https://dbdiagram.io/d/67b4bda8263d6cf9a09b16e3))</summary><br>
-    [![](./images/erd.svg)](https://dbdiagram.io/d/67b4bda8263d6cf9a09b16e3)
-    </details>
+* **Multiple data marts** for different stakeholders
+    * Data analyst - Summary information and metrics included in [listings.csv](https://insideairbnb.com/get-the-data/#:~:text=Taipei%2C%20Northern%20Taiwan%2C%20Taiwan) for listings in Taipei (good for visualisations) 
+    * Data scientist - Features generated based on [From Data to Insights: Segmenting Airbnb’s Supply](https://medium.com/airbnb-engineering/from-data-to-insights-segmenting-airbnbs-supply-c88aa2bb9399) from [The Airbnb Tech Blog](https://medium.com/airbnb-engineering) for supply pattern segmentation
+* **Dimension modelling** for better understanding the dataset <details><summary>Click to view the entity–relationship diagram (powered by [dbdiagram.io](https://dbdiagram.io/d/67b4bda8263d6cf9a09b16e3))</summary><br> [![](./images/erd.svg)](https://dbdiagram.io/d/67b4bda8263d6cf9a09b16e3)</details>
 
 ### Tech stacks and Architecture
 * [Apache Airflow](https://airflow.apache.org/) for data orchestration 

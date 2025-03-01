@@ -1,6 +1,9 @@
 models:
   - name: mart_data_analyst
-    description: Summary information and metrics for listings in Taipei (good for visualisations). Created based on listings.csv summary.
+    description: |
+      Summary information and metrics for listings in Taipei (good for visualisations).
+      Created based on listings.csv summary.
+      This data mart contains only data from the latest update.
     columns:
       - name: id
         description: Airbnb's unique identifier for the listing

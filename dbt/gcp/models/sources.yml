@@ -6,3 +6,4 @@ sources:
       - name: raw_listings
       - name: raw_reviews
       - name: raw_neighbourhoods
+      - name: raw_calendar

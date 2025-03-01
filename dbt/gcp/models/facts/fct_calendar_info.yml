@@ -1,0 +1,50 @@
+models:
+  - name: fct_calendar_info
+    description: The calendar file records the price, availability and other details from the listing's calendar for each day of the next 365 days
+    config:
+      contract: { enforced: false }
+    columns:
+      - name: listing_id
+        data_type: int64
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_listings')
+            to_columns: [listing_id]
+      
+      - name: date
+        data_type: date
+        description: The date in the listing's calendar
+        tests:
+          - not_null
+
+      - name: available
+        data_type: boolean
+        description: Whether the date is available for a booking
+
+      - name: price
+        data_type: float64
+        description: The price listed for the day
+
+      - name: adjusted_price
+        data_type: float64
+
+      - name: minimum_nights
+        data_type: int64
+        description: Minimum nights for a booking made on this day
+
+      - name: maximum_nights
+        data_type: int64
+        description: Maximum nights for a booking made on this day
+
+      - name: scrape_id
+        data_type: int64
+        tests:
+          - not_null
+        constraints:
+          - type: not_null
+          - type: foreign_key
+            to: ref('dim_scrape')
+            to_columns: [scrape_id]

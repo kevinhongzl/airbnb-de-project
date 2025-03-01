@@ -30,7 +30,7 @@ db_connection = ProfileConfig(
     target_name="dev",
     profiles_yml_filepath=f"{transform}/profiles.yml",
 )
-test_periods = 6
+test_periods = 13
 
 with DAG(
     "gcp-elt",
@@ -93,12 +93,20 @@ with DAG(
                     json_text += json.dumps(nbh, ensure_ascii=False) + "\n"
                 f.write(json_text)
 
+        @task
+        def convert_calendar_csv_into_parquet(ds, **kwargs):
+            import pandas as pd
+
+            data = pd.read_csv(f"{data_source}/{ds}/calendar.csv.gz")
+            data.to_parquet(f"{data_source}/{ds}/calendar.parquet")
+
         @task(task_id="upload_files_to_gcs")
         def upload_files_to_gcs(ds=None, **kwargs):
             bucket_name = os.environ["TF_VAR_BUCKET_NAME"]
             filenames = [
                 "listings.parquet",
                 "reviews.parquet",
+                "calendar.parquet",
                 "neighbourhoods.json",
             ]
             for file in filenames:
@@ -107,7 +115,8 @@ with DAG(
         c1 = convert_listings_csv_into_parquet()
         c2 = convert_reviews_csv_into_parquet()
         c3 = convert_neighbourhoods_geojson_into_json()
-        [c1, c2, c3] >> upload_files_to_gcs()
+        c4 = convert_calendar_csv_into_parquet()
+        [c1, c2, c3, c4] >> upload_files_to_gcs()
 
     with TaskGroup(group_id="create_raw_tables_in_data_warehouse") as create_raw_tables:
 
@@ -163,10 +172,28 @@ with DAG(
                 project, dataset_id, table_name, bucket, ds, "neighbourhoods.json", job_config
             )
 
+        @task
+        def create_and_load_raw_calendar(ds, **kwargs):
+            from google.cloud import bigquery
+
+            project = os.environ["TF_VAR_PROJECT"]
+            dataset_id = os.environ["TF_VAR_DATASET_ID"]
+            table_name = "raw_calendar"
+            bucket = os.environ["TF_VAR_BUCKET_NAME"]
+            job_config = bigquery.LoadJobConfig(
+                source_format=bigquery.SourceFormat.PARQUET,
+                write_disposition="WRITE_TRUNCATE",
+                clustering_fields=["listing_id"],
+            )
+            create_and_load(
+                project, dataset_id, table_name, bucket, ds, "calendar.parquet", job_config
+            )
+
         cl1 = create_and_load_raw_listings()
         cl2 = create_and_load_raw_reviews()
         cl3 = create_and_load_raw_neighbourhoods()
-        [cl1, cl2, cl3]
+        cl4 = create_and_load_raw_calendar()
+        [cl1, cl2, cl3, cl4]
 
     data_warehouse = DbtTaskGroup(
         group_id="transform_into_staging_dimension_fact_tables",

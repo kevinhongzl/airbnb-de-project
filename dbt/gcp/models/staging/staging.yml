@@ -17,3 +17,9 @@ models:
         - nullity_equality:
             compare_model: source('dataset', 'raw_reviews')
             keys: ['id']
+    
+    # - name: stg_calendar
+    #   tests:
+    #     - nullity_equality:
+    #         compare_model: source('dataset', 'raw_calendar')
+    #         keys: ['listing_id', 'date']

@@ -34,7 +34,7 @@ We'll take on this challenge by using monthly data from [Inside Airbnb](https://
 
 <img src="./images/dashboard.png" alt="airflow" width="75%"/>
 
-Final result from Google Look Studio. [Link](https://lookerstudio.google.com/u/0/reporting/606c5c3d-9afd-4e9f-8e9d-43902ae46d23/page/p_hsqb6vwzpd) here. 
+Final result from Google Looker Studio. [Link](https://lookerstudio.google.com/u/0/reporting/606c5c3d-9afd-4e9f-8e9d-43902ae46d23/page/p_hsqb6vwzpd) here. 
 
 ## 🚀 Get Started
 
@@ -63,10 +63,11 @@ $> export TF_VAR_BUCKET_NAME=<your-bucket-name> # e.g. de-project-bucket-72116
 $> export TF_VAR_DATASET_ID=<your-dataset-id>   # e.g. de_project_dataset_72116
 $> docker compose up 
 ```
-5. Access `localhost:8080` with your browser and login Airflow with `admin:admin`
+5. After Airflow is ready (see note), access `localhost:8080` with your browser for the Airflow webUI and login with `admin:admin`
 6. Click the toggle of `gcp-elt` to activate the dag
 
 > [!NOTE]
+> **GCP Settings** <br>
 > The bucket `<your-bucket-name>` and the dataset `<your-dataset-id>` will be created as the pipeline runs. You don't need to create them manually. However, 
 > 1. The bucket name should be globally unique, so we add a random number after the bucket name.
 > 2. The dataset id does not allow hyphens, so we have to use underscores instead.
@@ -74,13 +75,24 @@ $> docker compose up
 > [!WARNING]
 > Even though the credentials directory is listed in .gitignore to prevent accidental uploads of credential keys, do not push the cloned repo unless you are certain there are no settings that could lead to credential leakage!
 
+> [!Note]
+> **When is your Airflow ready?**<br>
+> You can open the webUI of Airflow once you see something quite similar to the following messages:
+```
+webserver-1  | [2025-04-02 08:54:28 +0000] [87] [INFO] Listening at: http://0.0.0.0:8080 (87)
+webserver-1  | [2025-04-02 08:54:28 +0000] [87] [INFO] Using worker: sync
+webserver-1  | [2025-04-02 08:54:28 +0000] [347] [INFO] Booting worker with pid: 347
+webserver-1  | [2025-04-02 08:54:29 +0000] [348] [INFO] Booting worker with pid: 348
+webserver-1  | [2025-04-02 08:54:30 +0000] [349] [INFO] Booting worker with pid: 349
+webserver-1  | [2025-04-02 08:54:32 +0000] [350] [INFO] Booting worker with pid: 350
+```
 
-#### Deployed successfully! 
+### Deployed successfully! 
 If everything works as expected, you will get your Airflow orchestration results like this:
 
 <img src="./images/airflow.png" alt="airflow" width="75%"/>
 
-#### How to tear down resources / shut down the running container?
+### How to tear down resources / shut down the running container?
 * If you are still running the docker container
     1. Run DAG `gcp-tear-down` and wait until it completes all the tasks
     2. Press `Ctrl+C` to stop the running container
@@ -111,7 +123,7 @@ with DAG(
 ):
     # ...
 ```
-If you would like to obtain data for more than a month, for instance, you can set `test_periods = 13` to store listings data of last 13 months in the data warehouse.
+If you would like to obtain data for more than a month, for instance, you can set `test_periods = 13` (to create meaningful  yearly features for DS data marts) to store listings data of last 13 months in the data warehouse.
 
 To get the full dataset which I visualized in my dashboard, you modify the `get_schedule()` argument like:
 
@@ -147,3 +159,20 @@ We summarize how the components in the data pipeline are set up and where you ca
 #### Google Cloud Platform
 * By default, Google Cloud client looks for its key file at `~/.config/gcloud/application_default_credentials.json` (See [here](https://cloud.google.com/docs/authentication/application-default-credentials#personal)). To ensure access within the Docker container, we bind-mount the `/credentials` directory to `/root/.config/gcloud/`.
 * For simplicity, both **Terraform** (`main.tf`) and **dbt** (`dbt/gcp/profiles.yml`) use the same key file (`application_default_credentials.json`) to interact with Google Cloud.
+
+## 📚 Useful Links & Learning Resources
+
+* [Data Engineering Zoomcamp ](https://github.com/DataTalksClub/data-engineering-zoomcamp)
+
+### Best practices
+* [Best Practices for Airflow](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html)
+* [Best practice guides from dbt](https://docs.getdbt.com/best-practices)
+
+### Projects
+* [Interactive DataTalksClub Course Projects Dashboard](https://datatalksclub-projects.streamlit.app/)
+* [practical-data-engineering](https://github.com/ssp-data/practical-data-engineering)
+* [DataEngineeringProject](https://github.com/damklis/DataEngineeringProject)
+
+
+
+ 

@@ -39,6 +39,9 @@ Final result from Google Look Studio. [Link](https://lookerstudio.google.com/u/0
 
 Since everything is containerized in the project, the only prerequisite is to install [Docker](https://www.docker.com/). You can choose either of the below solutions to build and run a pipeline.
 
+> [!NOTE]
+> Due to the eol (end-of-line) issue, you may want to set `git config --global core.autocrlf input` before you clone the repo if you are using WSL, Linux, or MacOS.
+
 ### On-premise ELT using Postgres
 1. Git clone this repo.
 2. Run docker compose under the repo directory: `docker compose up`
@@ -51,19 +54,21 @@ Since everything is containerized in the project, the only prerequisite is to in
 1. Git clone this repo.
 2. Create a project `<your-project>` and a service account. Grant your service account the following two roles: `BigQuery Admin` and `Storage Admin`.
 3. Download the service account key file into the directory `credentials/` and rename it to `application_default_credentials.json`
-    * See [here]() for more details about setting up GCP project and credentials.
+    * See [here](gcp-setup.md) for more details about setting up GCP project and credentials.
 4. In your shell, set the following environment variables and run docker compose:
 ```shell
-$> export TF_VAR_PROJECT=<your-project>
-$> export TF_VAR_BUCKET_NAME=<your-bucket-name>
-$> export TF_VAR_DATASET_ID=<your-dataset-id>
+$> export TF_VAR_PROJECT=<your-project>         # e.g. de-project-demo
+$> export TF_VAR_BUCKET_NAME=<your-bucket-name> # e.g. de-project-bucket-72116
+$> export TF_VAR_DATASET_ID=<your-dataset-id>   # e.g. de_project_dataset_72116
 $> docker compose up 
 ```
 5. Access `localhost:8080` with your browser and login Airflow with `admin:admin`
 6. Click the toggle of `gcp-elt` to activate the dag
 
 > [!NOTE]
-> The bucket `<your-bucket-name>` and the dataset `<your-dataset-id>` will be created as the pipeline runs. You don't need to create them manually.
+> The bucket `<your-bucket-name>` and the dataset `<your-dataset-id>` will be created as the pipeline runs. You don't need to create them manually. However, 
+> 1. The bucket name should be globally unique, so we add a random number after the bucket name.
+> 2. The dataset id does not allow hyphens, so we have to use underscores instead.
 
 > [!WARNING]
 > Even though the credentials directory is listed in .gitignore to prevent accidental uploads of credential keys, do not push the cloned repo unless you are certain there are no settings that could lead to credential leakage!

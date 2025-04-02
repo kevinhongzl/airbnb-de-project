@@ -3,12 +3,11 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+from airflow import DAG
 from airflow.decorators import task
 from airflow.operators.empty import EmptyOperator
 from airflow.utils.task_group import TaskGroup
 from cosmos import DbtTaskGroup, ExecutionConfig, ProfileConfig, ProjectConfig
-
-from airflow import DAG
 
 # custom utils
 sys.path.append("/opt/airflow/")
@@ -30,7 +29,7 @@ db_connection = ProfileConfig(
     target_name="dev",
     profiles_yml_filepath=f"{transform}/profiles.yml",
 )
-test_periods = 13
+test_periods = 1
 
 with DAG(
     "gcp-elt",
@@ -200,6 +199,7 @@ with DAG(
         project_config=ProjectConfig(transform),
         profile_config=db_connection,
         execution_config=venv_execution_config,
+        operator_args={"install_deps": True},
     )
 
     update_dashboard = EmptyOperator(task_id="update_dashboard")

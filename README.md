@@ -21,7 +21,8 @@ We'll take on this challenge by using monthly data from [Inside Airbnb](https://
 * [Apache Airflow](https://airflow.apache.org/) for data orchestration 
 * [Google Cloud Storage](https://cloud.google.com/storage/) for datalake
 * [Google BigQuery](https://cloud.google.com/bigquery) for data warehouse
-* [dbt](https://www.getdbt.com/) and [Astronomer Cosmos](https://astronomer.github.io/astronomer-cosmos/index.html) for data transformation, tests and docs
+* [dbt](https://www.getdbt.com/) for data transformation, tests and docs
+* [Astronomer Cosmos](https://astronomer.github.io/astronomer-cosmos/index.html) for better integration between [Apache Airflow](https://airflow.apache.org/) and [dbt](https://www.getdbt.com/)
 * [Looker Studio](https://lookerstudio.google.com/overview) for data visualization
 * [Terraform](https://www.terraform.io/) for cloud resource provision
 * [Docker](https://www.docker.com/) for containerizing services
@@ -95,6 +96,34 @@ Here is some information for those who want to modify or extend this project for
 
 ### Workflow
 ![](./images/airflow-dags.png)
+
+### Test Periods
+The variable `test_periods` controls how many months this data pipeline processes. The default value is set to 1 to facilitate testing or replication.
+
+```python
+test_periods = 1
+
+with DAG(
+    "gcp-elt",
+    # ...
+    schedule=get_schedule(-test_periods),
+    # ...
+):
+    # ...
+```
+If you would like to obtain data for more than a month, for instance, you can set `test_periods = 13` to store listings data of last 13 months in the data warehouse.
+
+To get the full dataset which I visualized in my dashboard, you modify the `get_schedule()` argument like:
+
+```python
+with DAG(
+    "gcp-elt",
+    # ...
+    schedule=get_schedule(start=0), # or simply: get_schedule()
+    # ...
+):
+    # ...
+```
 
 ### Configurations
 
